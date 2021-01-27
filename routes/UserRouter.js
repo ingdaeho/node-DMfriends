@@ -3,12 +3,11 @@ const router = express.Router();
 const { body } = require("express-validator");
 
 const { UserController } = require("../controllers");
-const errorGenerator = require("../errors/errorGenerator");
 
 router.post(
   "/signup",
   body("email").isEmail(),
-  body("password").isLength({ min: 5 }),
+  body("password").isStrongPassword(),
   // .custom((value, { req }) => {
   //   if (value !== req.body.confirm_password) {
   //     errorGenerator({
@@ -23,7 +22,7 @@ router.post(
 router.post(
   "/login",
   body("email").isEmail(),
-  body("password").isLength({ min: 5 }),
+  body("password").isStrongPassword(),
   UserController.logIn
 );
 

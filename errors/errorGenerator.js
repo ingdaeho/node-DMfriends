@@ -1,7 +1,7 @@
 const DEFAULT_HTTP_STATUS_MESSAGES = {
   400: "Bad Requests",
   401: "Unauthorized",
-  403: "Foribdden",
+  403: "Forbidden",
   404: "Not Found",
   500: "Internal Server Error",
   503: "Temporary Unavailable",

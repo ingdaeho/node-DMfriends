@@ -70,7 +70,7 @@ CREATE TABLE users
     `confirm_password`  VARCHAR(100)    NOT NULL, 
     `username`          VARCHAR(100)    NOT NULL, 
     `created_at`        DATETIME        NOT NULL    DEFAULT CURRENT_TIMESTAMP, 
-    `updated_at`        DATETIME        NULL        DEFAULT CURRENT_TIMESTAMP, 
+    `updated_at`        DATETIME        NULL        ON UPDATE CURRENT_TIMESTAMP, 
     `deleted_at`        DATETIME        NULL, 
     PRIMARY KEY (id)
 );
@@ -89,7 +89,7 @@ CREATE TABLE feeds
     `isLiked`       BIT             NOT NULL    DEFAULT 0, 
     `liked_num`     INT             NULL        DEFAULT 0, 
     `created_at`    DATETIME        NOT NULL    DEFAULT CURRENT_TIMESTAMP, 
-    `updated_at`    DATETIME        NULL        DEFAULT CURRENT_TIMESTAMP, 
+    `updated_at`    DATETIME        NULL        ON UPDATE CURRENT_TIMESTAMP, 
     `deleted_at`    DATETIME        NULL, 
     PRIMARY KEY (id)
 );
@@ -108,7 +108,7 @@ CREATE TABLE cart
     `price`        INT         NOT NULL, 
     `total_price`  INT         NOT NULL, 
     `created_at`   DATETIME    NOT NULL    DEFAULT CURRENT_TIMESTAMP, 
-    `updated_at`   DATETIME    NULL        DEFAULT CURRENT_TIMESTAMP, 
+    `updated_at`   DATETIME    NULL        ON UPDATE CURRENT_TIMESTAMP, 
     `deleted_at`   DATETIME    NULL, 
     PRIMARY KEY (id)
 );
@@ -138,7 +138,7 @@ CREATE TABLE reviews
     `liked_num`    INT             NULL        DEFAULT 0, 
     `isLiked`      BIT             NOT NULL    DEFAULT 0, 
     `created_at`   DATETIME        NOT NULL    DEFAULT CURRENT_TIMESTAMP, 
-    `updated_at`   DATETIME        NULL        DEFAULT CURRENT_TIMESTAMP, 
+    `updated_at`   DATETIME        NULL        ON UPDATE CURRENT_TIMESTAMP, 
     `deleted_at`   DATETIME        NULL, 
     PRIMARY KEY (id)
 );
@@ -184,7 +184,7 @@ CREATE TABLE feed_comments
     `feed_id`     INT         NOT NULL, 
     `contents`    TEXT        NOT NULL, 
     `created_at`  DATETIME    NOT NULL    DEFAULT CURRENT_TIMESTAMP, 
-    `updated_at`  DATETIME    NULL        DEFAULT CURRENT_TIMESTAMP, 
+    `updated_at`  DATETIME    NULL        ON UPDATE CURRENT_TIMESTAMP, 
     `deleted_at`  DATETIME    NULL, 
     PRIMARY KEY (id)
 );
