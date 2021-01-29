@@ -9,17 +9,19 @@ datasource db {
 
 model cart {
   id             Int              @id @default(autoincrement())
+  user_id        Int
   product_id     Int
   quantity       Int
   price          Int
-  total_price    Int
   created_at     DateTime         @default(now())
   updated_at     DateTime?        @default(now())
   deleted_at     DateTime?
   products       products         @relation(fields: [product_id], references: [id])
+  users          users            @relation(fields: [user_id], references: [id])
   product_images product_images[]
 
   @@index([product_id], name: "FK_cart_product_id_products_id")
+  @@index([user_id], name: "FK_cart_user_id_users_id")
 }
 
 model categories {
@@ -91,7 +93,7 @@ model feeds {
 
 model product_image_types {
   id             Int              @id @default(autoincrement())
-  name           Int
+  name           String?
   product_images product_images[]
 }
 
@@ -177,6 +179,7 @@ model users {
   created_at       DateTime        @default(now())
   updated_at       DateTime?       @default(now())
   deleted_at       DateTime?
+  cart             cart[]
   feed_comments    feed_comments[]
   likes            likes[]
   recent_views     recent_views[]

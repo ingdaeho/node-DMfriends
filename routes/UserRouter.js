@@ -1,21 +1,13 @@
 const express = require("express");
 const router = express.Router();
 const { body } = require("express-validator");
-
-const { UserController } = require("../controllers");
+const { UserController, CartController } = require("../controllers");
+const { validateToken } = require("../middlewares");
 
 router.post(
   "/signup",
   body("email").isEmail(),
   body("password").isStrongPassword(),
-  // .custom((value, { req }) => {
-  //   if (value !== req.body.confirm_password) {
-  //     errorGenerator({
-  //       message: "Password confirmation does not match password",
-  //     });
-  //   }
-  //   return true;
-  // }),
   UserController.signUp
 );
 
@@ -26,8 +18,15 @@ router.post(
   UserController.logIn
 );
 
-// router.get("/:userId/cart");
-// router.post("/:userId/cart");
-// router.delete("/:userId/cart");
+// cart
+router.get("/:userId/cart", validateToken, CartController.getCartItems);
+router.post("/:userId/cart", validateToken, CartController.addItem);
+router.put("/:userId/cart/", validateToken, CartController.changeQuantity);
+router.delete(
+  "/:userId/cart/:cartId",
+  validateToken,
+  CartController.deleteOneItem
+);
+router.delete("/:userId/cart", validateToken, CartController.deleteAllItems);
 
 module.exports = router;

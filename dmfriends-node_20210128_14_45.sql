@@ -30,6 +30,24 @@ ALTER TABLE subcategories
 
 
 -- categories Table Create SQL
+CREATE TABLE users
+(
+    `id`                INT             NOT NULL    AUTO_INCREMENT, 
+    `email`             VARCHAR(100)    NOT NULL, 
+    `password`          VARCHAR(100)    NOT NULL, 
+    `confirm_password`  VARCHAR(100)    NOT NULL, 
+    `username`          VARCHAR(100)    NOT NULL, 
+    `created_at`        DATETIME        NOT NULL    DEFAULT CURRENT_TIMESTAMP, 
+    `updated_at`        DATETIME        NULL        DEFAULT CURRENT_TIMESTAMP, 
+    `deleted_at`        DATETIME        NULL, 
+    PRIMARY KEY (id)
+);
+
+ALTER TABLE users
+    ADD CONSTRAINT UC_email UNIQUE (email);
+
+
+-- categories Table Create SQL
 CREATE TABLE products
 (
     `id`              INT             NOT NULL    AUTO_INCREMENT, 
@@ -62,24 +80,6 @@ ALTER TABLE characters
 
 
 -- categories Table Create SQL
-CREATE TABLE users
-(
-    `id`                INT             NOT NULL    AUTO_INCREMENT, 
-    `email`             VARCHAR(100)    NOT NULL, 
-    `password`          VARCHAR(100)    NOT NULL, 
-    `confirm_password`  VARCHAR(100)    NOT NULL, 
-    `username`          VARCHAR(100)    NOT NULL, 
-    `created_at`        DATETIME        NOT NULL    DEFAULT CURRENT_TIMESTAMP, 
-    `updated_at`        DATETIME        NULL        ON UPDATE CURRENT_TIMESTAMP, 
-    `deleted_at`        DATETIME        NULL, 
-    PRIMARY KEY (id)
-);
-
-ALTER TABLE users
-    ADD CONSTRAINT UC_email UNIQUE (email);
-
-
--- categories Table Create SQL
 CREATE TABLE feeds
 (
     `id`            INT             NOT NULL    AUTO_INCREMENT, 
@@ -89,7 +89,7 @@ CREATE TABLE feeds
     `isLiked`       BIT             NOT NULL    DEFAULT 0, 
     `liked_num`     INT             NULL        DEFAULT 0, 
     `created_at`    DATETIME        NOT NULL    DEFAULT CURRENT_TIMESTAMP, 
-    `updated_at`    DATETIME        NULL        ON UPDATE CURRENT_TIMESTAMP, 
+    `updated_at`    DATETIME        NULL        DEFAULT CURRENT_TIMESTAMP, 
     `deleted_at`    DATETIME        NULL, 
     PRIMARY KEY (id)
 );
@@ -102,20 +102,24 @@ ALTER TABLE feeds
 -- categories Table Create SQL
 CREATE TABLE cart
 (
-    `id`           INT         NOT NULL    AUTO_INCREMENT, 
-    `product_id`   INT         NOT NULL, 
-    `quantity`     INT         NOT NULL, 
-    `price`        INT         NOT NULL, 
-    `total_price`  INT         NOT NULL, 
-    `created_at`   DATETIME    NOT NULL    DEFAULT CURRENT_TIMESTAMP, 
-    `updated_at`   DATETIME    NULL        ON UPDATE CURRENT_TIMESTAMP, 
-    `deleted_at`   DATETIME    NULL, 
+    `id`          INT         NOT NULL    AUTO_INCREMENT, 
+    `user_id`     INT         NOT NULL, 
+    `product_id`  INT         NOT NULL, 
+    `quantity`    INT         NOT NULL, 
+    `price`       INT         NOT NULL, 
+    `created_at`  DATETIME    NOT NULL    DEFAULT CURRENT_TIMESTAMP, 
+    `updated_at`  DATETIME    NULL        DEFAULT CURRENT_TIMESTAMP, 
+    `deleted_at`  DATETIME    NULL, 
     PRIMARY KEY (id)
 );
 
 ALTER TABLE cart
     ADD CONSTRAINT FK_cart_product_id_products_id FOREIGN KEY (product_id)
         REFERENCES products (id) ON DELETE RESTRICT ON UPDATE RESTRICT;
+
+ALTER TABLE cart
+    ADD CONSTRAINT FK_cart_user_id_users_id FOREIGN KEY (user_id)
+        REFERENCES users (id) ON DELETE RESTRICT ON UPDATE RESTRICT;
 
 
 -- categories Table Create SQL
@@ -138,7 +142,7 @@ CREATE TABLE reviews
     `liked_num`    INT             NULL        DEFAULT 0, 
     `isLiked`      BIT             NOT NULL    DEFAULT 0, 
     `created_at`   DATETIME        NOT NULL    DEFAULT CURRENT_TIMESTAMP, 
-    `updated_at`   DATETIME        NULL        ON UPDATE CURRENT_TIMESTAMP, 
+    `updated_at`   DATETIME        NULL        DEFAULT CURRENT_TIMESTAMP, 
     `deleted_at`   DATETIME        NULL, 
     PRIMARY KEY (id)
 );
@@ -184,7 +188,7 @@ CREATE TABLE feed_comments
     `feed_id`     INT         NOT NULL, 
     `contents`    TEXT        NOT NULL, 
     `created_at`  DATETIME    NOT NULL    DEFAULT CURRENT_TIMESTAMP, 
-    `updated_at`  DATETIME    NULL        ON UPDATE CURRENT_TIMESTAMP, 
+    `updated_at`  DATETIME    NULL        DEFAULT CURRENT_TIMESTAMP, 
     `deleted_at`  DATETIME    NULL, 
     PRIMARY KEY (id)
 );
