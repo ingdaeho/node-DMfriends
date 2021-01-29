@@ -7,8 +7,8 @@ const createUser = (fields) => {
 const findUser = (field) => {
   const [uniqueKey] = Object.keys(field);
 
-  const isKeyId = uniqueKey === "id";
-  const value = isKeyId ? Number(field[uniqueKey]) : field[uniqueKey];
+  const value =
+    uniqueKey === "id" ? Number(field[uniqueKey]) : field[uniqueKey];
 
   return prisma.users.findUnique({ where: { [uniqueKey]: value } });
 };

@@ -4,7 +4,8 @@ const errorGenerator = require("./errorGenerator");
 const errorWrapper = (controller) => async (req, res, next) => {
   try {
     const errors = validationResult(req);
-    if (!errors.isEmpty()) errorGenerator({ statusCode: 400 });
+    if (!errors.isEmpty())
+      errorGenerator({ statusCode: 400, validationErrors: errors });
 
     await controller(req, res, next);
   } catch (err) {
