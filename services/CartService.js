@@ -1,5 +1,4 @@
 const prisma = require("../prisma");
-const { makeQueryOption } = require("../utils");
 
 const ARTICLES_DEFAULT_OFFSET = 0;
 const ARTICLES_DEFAULT_LIMIT = 5;
