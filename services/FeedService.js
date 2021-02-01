@@ -53,63 +53,28 @@ const createComment = ({ feed_id, user_id, contents }) => {
   });
 };
 
-const findLikeStatus = ({ feed_id }) => {
-  return prisma.feeds.findUnique({
-    where: { id: Number(feed_id) },
-    select: {
-      isLiked: true,
-    },
+const findLikeStatus = ({ feed_id, user_id }) => {
+  const value = Number(feed_id);
+  return prisma.likes.findFirst({
+    where: { feed_id: value, user_id },
   });
 };
 
-// const changeToLiked = ({ feed_id, user_id }) => {
-//   return (
-//     prisma.likes.create({
-//       data: {
-//         feed_id,
-//         user_id,
-//       },
-//     }),
-//     prisma.feeds.update({
-//       where: {
-//         id: feed_id,
-//       },
-//       data: {
-//         isLiked: 1,
-//       },
-//     })
-//   );
-// }
-
 const changeToLiked = ({ feed_id, user_id }) => {
-  prisma.likes.create({
+  return prisma.likes.create({
     data: {
       feed_id,
       user_id,
     },
-  }),
-    prisma.feeds.update({
-      where: {
-        id: feed_id,
-      },
-      data: {
-        isLiked: true,
-      },
-    });
+  });
 };
 
-const deleteLiked = ({ feed_id }) => {
-  return (
-    prisma.likes.delete({ where: { id: feed_id } }),
-    prisma.feeds.update({
-      where: {
-        id: feed_id,
-      },
-      data: {
-        isLiked: 0,
-      },
-    })
-  );
+const deleteLiked = ({ id: foundStatusId }) => {
+  return prisma.likes.delete({
+    where: {
+      id: foundStatusId,
+    },
+  });
 };
 
 module.exports = {

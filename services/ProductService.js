@@ -4,6 +4,7 @@ const ARTICLES_DEFAULT_OFFSET = 0;
 const ARTICLES_DEFAULT_LIMIT = 5;
 
 const findProducts = () => {
+  // limit ofset
   return prisma.products.findMany({
     include: {
       product_images: {
@@ -24,6 +25,7 @@ const findProducts = () => {
 };
 
 const findDetailInfo = (query) => {
+  // product_id params
   const { product_id, offset, limit } = query;
   const value = Number(product_id);
   return prisma.products.findUnique({
@@ -43,6 +45,10 @@ const findDetailInfo = (query) => {
         },
       },
       recent_views: {
+        include: {
+          // 현재 상품 제거
+          products: true,
+        },
         skip: Number(offset) || ARTICLES_DEFAULT_OFFSET,
         take: Number(limit) || ARTICLES_DEFAULT_LIMIT,
         orderBy: {
