@@ -1,5 +1,5 @@
 const { CartService } = require("../services");
-const { errorWrapper, errorGenerator } = require("../errors");
+const { errorWrapper } = require("../errors");
 
 const getCartItems = errorWrapper(async (req, res) => {
   const cartItems = await CartService.getItems(req.query);
@@ -7,13 +7,13 @@ const getCartItems = errorWrapper(async (req, res) => {
 });
 
 const addItem = errorWrapper(async (req, res) => {
-  //   const { userId } = req.params;
-  const { id: userId } = req.foundUser;
-  const { productId, quantity, price } = req.body;
+  // user_id는 params or token 어디서 받아서 써야하는지?
+  const { id: user_id } = req.foundUser;
+  const { product_id, quantity, price } = req.body;
 
   const itemAdded = await CartService.addItem({
-    userId,
-    productId,
+    user_id,
+    product_id,
     quantity,
     price,
   });
@@ -21,11 +21,32 @@ const addItem = errorWrapper(async (req, res) => {
   res.status(201).json({ itemAdded });
 });
 
-const changeQuantity = () => {};
+const changeQuantity = errorWrapper(async (req, res) => {
+  // product_id, price는 프론트에서 다시 받아야하는게 맞는건지?
+  const { id: user_id } = req.foundUser; // user_id를 쓰지 않았는데 ?
+  const { cartId: cart_id } = req.params;
+  const { quantity } = req.body;
 
-const deleteOneItem = () => {};
+  const changedQuantity = await CartService.changeProductValue({
+    cart_id,
+    quantity,
+  });
+  res.status(200).json({ changedQuantity });
+});
 
-const deleteAllItems = () => {};
+const deleteOneItem = errorWrapper(async (req, res) => {
+  const { cartId: cart_id } = req.params;
+
+  const deletedSelectedItem = await CartService.deleteSelectedItem({ cart_id });
+  res.status(201).json({ deletedSelectedItem });
+});
+
+const deleteAllItems = errorWrapper(async (req, res) => {
+  const { cartId: cart_id } = req.params;
+
+  const deletedAllItems = await CartService.deleteAllItems();
+  res.status(201).json({ deletedAllItems });
+});
 
 module.exports = {
   getCartItems,

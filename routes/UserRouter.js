@@ -19,7 +19,7 @@ router.post(
 );
 
 // cart
-router.get("/:userId/cart", CartController.getCartItems);
+router.get("/:userId/cart", validateToken, CartController.getCartItems);
 router.post("/:userId/cart", validateToken, CartController.addItem);
 router.put(
   "/:userId/cart/:cartId",
