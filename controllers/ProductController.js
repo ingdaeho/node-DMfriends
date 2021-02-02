@@ -7,9 +7,14 @@ const getProducts = errorWrapper(async (req, res) => {
 });
 
 const getOneProduct = errorWrapper(async (req, res) => {
+  const { id: userIdFromToken } = req.foundUser;
   const { productId } = req.params;
+  const { query } = req;
+
   const productDetail = await ProductService.findDetailInfo({
     product_id: productId,
+    user_id: userIdFromToken,
+    query,
   });
   res.status(200).json({ productDetail });
 });
