@@ -21,16 +21,12 @@ router.post(
 // cart
 router.get("/:userId/cart", validateToken, CartController.getCartItems);
 router.post("/:userId/cart", validateToken, CartController.addItem);
-router.put(
-  "/:userId/cart/:cartId",
-  validateToken,
-  CartController.changeQuantity
-);
+router.put("/:userId/cart", validateToken, CartController.changeQuantity);
+router.delete("/:userId/cart", validateToken, CartController.deleteOneItem);
 router.delete(
-  "/:userId/cart/:cartId",
+  "/:userId/cart/all",
   validateToken,
-  CartController.deleteOneItem
+  CartController.deleteAllItems
 );
-router.delete("/:userId/cart", validateToken, CartController.deleteAllItems);
 
 module.exports = router;

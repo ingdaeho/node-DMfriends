@@ -3,10 +3,23 @@ const prisma = require("../prisma");
 const ARTICLES_DEFAULT_OFFSET = 0;
 const ARTICLES_DEFAULT_LIMIT = 5;
 
-const getItems = (query) => {
-  const { offset, limit } = query;
+const findCart = ({ user_id, product_id }) => {
+  return prisma.cart.findFirst({
+    where: {
+      user_id,
+      product_id,
+      deleted_at: null,
+    },
+  });
+};
 
+const getItems = ({ user_id, query }) => {
+  const { offset, limit } = query;
   return prisma.cart.findMany({
+    where: {
+      user_id,
+      deleted_at: null,
+    },
     skip: Number(offset) || ARTICLES_DEFAULT_OFFSET,
     take: Number(limit) || ARTICLES_DEFAULT_LIMIT,
     orderBy: {
@@ -16,35 +29,59 @@ const getItems = (query) => {
 };
 
 const addItem = (fields) => {
-  const { user_id, product_id, quantity, price } = fields;
-  return prisma.cart.create({
-    data: {
+  const { cartId, user_id, product_id, quantity, price } = fields;
+  return prisma.cart.upsert({
+    where: { id: cartId || 1 },
+    create: {
       user_id,
-      product_id: Number(product_id),
-      quantity: Number(quantity),
-      price: Number(price),
+      product_id,
+      quantity,
+      price,
+    },
+    update: {
+      quantity: {
+        increment: quantity,
+      },
+      updated_at: new Date(),
     },
   });
 };
 
 const changeProductValue = (fields) => {
-  const { cart_id, quantity } = fields;
+  const { id, quantity } = fields;
   return prisma.cart.update({
-    where: { id: Number(cart_id) },
+    where: { id },
     data: {
       quantity,
+      updated_at: new Date(),
     },
   });
 };
 
-const deleteSelectedItem = ({ cart_id }) => {
-  return prisma.cart.delete({
-    where: { id: Number(cart_id) },
+const deleteSelectedItem = (fields) => {
+  const { id, product_id } = fields;
+  return prisma.cart.updateMany({
+    where: {
+      id,
+      product_id,
+      deleted_at: null,
+    },
+    data: {
+      deleted_at: new Date(),
+    },
   });
 };
 
-const deleteAllItems = () => {
-  return prisma.cart.deleteMany({});
+const deleteAllItems = ({ user_id }) => {
+  return prisma.cart.updateMany({
+    where: {
+      user_id: Number(user_id),
+      deleted_at: null,
+    },
+    data: {
+      deleted_at: new Date(),
+    },
+  });
 };
 
 module.exports = {
@@ -53,4 +90,5 @@ module.exports = {
   changeProductValue,
   deleteSelectedItem,
   deleteAllItems,
+  findCart,
 };
