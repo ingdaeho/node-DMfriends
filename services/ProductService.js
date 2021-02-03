@@ -4,7 +4,7 @@ const ARTICLES_DEFAULT_OFFSET = 0;
 const ARTICLES_DEFAULT_LIMIT = 8;
 
 const findProducts = (query) => {
-  const { offset, limit } = query;
+  const { offset, limit, ...fields } = query;
   return prisma.products.findMany({
     include: {
       product_images: {
@@ -26,7 +26,8 @@ const findProducts = (query) => {
   });
 };
 
-const findDetailInfo = async ({ product_id, user_id, query }) => {
+const findDetailInfo = async (fields) => {
+  const { product_id, user_id, query } = fields;
   const { offset, limit } = query;
   const value = Number(product_id);
 
