@@ -3,7 +3,8 @@ const prisma = require("../prisma");
 const ARTICLES_DEFAULT_OFFSET = 0;
 const ARTICLES_DEFAULT_LIMIT = 5;
 
-const findCart = ({ user_id, product_id }) => {
+const findCart = (fields) => {
+  const { user_id, product_id } = fields;
   return prisma.cart.findFirst({
     where: {
       user_id,
@@ -13,7 +14,8 @@ const findCart = ({ user_id, product_id }) => {
   });
 };
 
-const getItems = ({ user_id, query }) => {
+const getItems = (fields) => {
+  const { user_id, query } = fields;
   const { offset, limit } = query;
   return prisma.cart.findMany({
     where: {
@@ -72,7 +74,8 @@ const deleteSelectedItem = (fields) => {
   });
 };
 
-const deleteAllItems = ({ user_id }) => {
+const deleteAllItems = (fields) => {
+  const { user_id } = fields;
   return prisma.cart.updateMany({
     where: {
       user_id: Number(user_id),
