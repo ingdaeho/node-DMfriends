@@ -1,7 +1,7 @@
 const prisma = require("../prisma");
 
-const ARTICLES_DEFAULT_OFFSET = 0;
-const ARTICLES_DEFAULT_LIMIT = 5;
+const PRODUCTS_DEFAULT_OFFSET = 0;
+const PRODUCTS_DEFAULT_LIMIT = 5;
 
 const findCart = (fields) => {
   const { user_id, product_id } = fields;
@@ -22,8 +22,8 @@ const getItems = (fields) => {
       user_id,
       deleted_at: null,
     },
-    skip: Number(offset) || ARTICLES_DEFAULT_OFFSET,
-    take: Number(limit) || ARTICLES_DEFAULT_LIMIT,
+    skip: Number(offset) || PRODUCTS_DEFAULT_OFFSET,
+    take: Number(limit) || PRODUCTS_DEFAULT_LIMIT,
     orderBy: {
       created_at: "desc",
     },

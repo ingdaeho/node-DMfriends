@@ -22,7 +22,7 @@ router.post(
 router.get("/:userId/cart", validateToken, CartController.getCartItems);
 router.post("/:userId/cart", validateToken, CartController.addItem);
 router.put("/:userId/cart", validateToken, CartController.changeQuantity);
-router.delete("/:userId/cart", validateToken, CartController.deleteOneItem);
+router.delete("/:userId/cart", validateToken, CartController.deleteChosenItem);
 router.delete(
   "/:userId/cart/all",
   validateToken,

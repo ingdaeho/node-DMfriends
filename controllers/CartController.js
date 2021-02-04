@@ -29,37 +29,16 @@ const addItem = errorWrapper(async (req, res) => {
     product_id,
   });
 
-  if (!foundCart) {
-    const itemAdded = await CartService.addItem({
-      user_id: userIdFromToken,
-      product_id,
-      quantity,
-      price,
-    });
-    res.status(201).json({ itemAdded });
-  }
+  const addItemInput = {
+    user_id: userIdFromToken,
+    product_id,
+    quantity,
+    price,
+    cartId: foundCart?.product_id === product_id && foundCart.id,
+  };
 
-  if (foundCart && foundCart.product_id === product_id) {
-    const { id: cartId } = foundCart;
-    const itemAdded = await CartService.addItem({
-      cartId,
-      user_id: userIdFromToken,
-      product_id,
-      quantity,
-      price,
-    });
-    res.status(201).json({ itemAdded });
-  }
-
-  if (foundCart && foundCart.product_id !== product_id) {
-    const itemAdded = await CartService.addItem({
-      user_id: userIdFromToken,
-      product_id,
-      quantity,
-      price,
-    });
-    res.status(201).json({ itemAdded });
-  }
+  const itemAdded = await CartService.addItem(addItemInput);
+  res.status(201).json({ itemAdded });
 });
 
 const changeQuantity = errorWrapper(async (req, res) => {
@@ -83,7 +62,7 @@ const changeQuantity = errorWrapper(async (req, res) => {
   res.status(201).json({ changedQuantity });
 });
 
-const deleteOneItem = errorWrapper(async (req, res) => {
+const deleteChosenItem = errorWrapper(async (req, res) => {
   const { userId } = req.params;
   const { id: userIdFromToken } = req.foundUser;
   const { product_id } = req.body;
@@ -105,7 +84,6 @@ const deleteOneItem = errorWrapper(async (req, res) => {
 });
 
 const deleteAllItems = errorWrapper(async (req, res) => {
-  // 한개의 endpoint로 구현 가능?
   const { userId } = req.params;
   const { id: userIdFromToken } = req.foundUser;
 
@@ -122,6 +100,6 @@ module.exports = {
   getCartItems,
   addItem,
   changeQuantity,
-  deleteOneItem,
+  deleteChosenItem,
   deleteAllItems,
 };
