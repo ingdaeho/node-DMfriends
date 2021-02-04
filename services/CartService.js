@@ -22,6 +22,28 @@ const getItems = (fields) => {
       user_id,
       deleted_at: null,
     },
+    select: {
+      products: {
+        select: {
+          name: true,
+          product_images: {
+            select: {
+              image_url: true,
+              product_image_types: true,
+            },
+            where: {
+              product_image_types: {
+                name: {
+                  equals: "thumbnail",
+                },
+              },
+            },
+          },
+        },
+      },
+      quantity: true,
+      price: true,
+    },
     skip: Number(offset) || PRODUCTS_DEFAULT_OFFSET,
     take: Number(limit) || PRODUCTS_DEFAULT_LIMIT,
     orderBy: {

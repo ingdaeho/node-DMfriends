@@ -5,6 +5,8 @@ const { errorWrapper, errorGenerator } = require("../errors");
 
 const validateToken = errorWrapper(async (req, res, next) => {
   const [bearer, token] = req.headers.authorization.split(" ");
+  // const token = req.headers.authorization;
+
   const { id } = jwt.verify(token, AUTH_TOKEN_SALT);
 
   const foundUser = await UserService.findUser({ id });
