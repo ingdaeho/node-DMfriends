@@ -1,7 +1,7 @@
 const prisma = require("../prisma");
 
-const ARTICLES_DEFAULT_OFFSET = 0;
-const ARTICLES_DEFAULT_LIMIT = 5;
+const FEEDS_DEFAULT_OFFSET = 0;
+const FEEDS_DEFAULT_LIMIT = 5;
 
 const findFeeds = (query) => {
   const { offset, limit } = query;
@@ -29,8 +29,8 @@ const findFeeds = (query) => {
       },
       likes: {},
     },
-    skip: Number(offset) || ARTICLES_DEFAULT_OFFSET,
-    take: Number(limit) || ARTICLES_DEFAULT_LIMIT,
+    skip: Number(offset) || FEEDS_DEFAULT_OFFSET,
+    take: Number(limit) || FEEDS_DEFAULT_LIMIT,
     orderBy: {
       created_at: "desc",
     },
@@ -70,7 +70,7 @@ const findLikeStatus = (fields) => {
 };
 
 const changeToLiked = (fields) => {
-  const { feed_id, user_id } = fields;
+  const { feed_id, user_id } = fields.data;
   return prisma.likes.create({
     data: {
       feed_id,
@@ -80,7 +80,7 @@ const changeToLiked = (fields) => {
 };
 
 const deleteLiked = (fields) => {
-  const { id: foundStatusId } = fields;
+  const { id: foundStatusId } = fields.data;
   return prisma.likes.delete({
     where: {
       id: foundStatusId,

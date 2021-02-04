@@ -1,7 +1,7 @@
 const prisma = require("../prisma");
 
-const ARTICLES_DEFAULT_OFFSET = 0;
-const ARTICLES_DEFAULT_LIMIT = 8;
+const PRODUCTS_DEFAULT_OFFSET = 0;
+const PRODUCTS_DEFAULT_LIMIT = 8;
 
 const findProducts = (query) => {
   const { offset, limit, ...fields } = query;
@@ -21,8 +21,8 @@ const findProducts = (query) => {
         },
       },
     },
-    skip: Number(offset) || ARTICLES_DEFAULT_OFFSET,
-    take: Number(limit) || ARTICLES_DEFAULT_LIMIT,
+    skip: Number(offset) || PRODUCTS_DEFAULT_OFFSET,
+    take: Number(limit) || PRODUCTS_DEFAULT_LIMIT,
   });
 };
 
@@ -54,8 +54,8 @@ const findDetailInfo = async (fields) => {
           isLiked: true,
           created_at: true,
         },
-        skip: Number(offset) || ARTICLES_DEFAULT_OFFSET,
-        take: Number(limit) || ARTICLES_DEFAULT_LIMIT,
+        skip: Number(offset) || PRODUCTS_DEFAULT_OFFSET,
+        take: Number(limit) || PRODUCTS_DEFAULT_LIMIT,
         orderBy: {
           liked_num: "desc",
         },
@@ -87,8 +87,8 @@ const findDetailInfo = async (fields) => {
             },
           },
         },
-        skip: Number(offset) || ARTICLES_DEFAULT_OFFSET,
-        take: Number(limit) || ARTICLES_DEFAULT_LIMIT,
+        skip: Number(offset) || PRODUCTS_DEFAULT_OFFSET,
+        take: Number(limit) || PRODUCTS_DEFAULT_LIMIT,
         orderBy: {
           viewed_at: "desc",
         },

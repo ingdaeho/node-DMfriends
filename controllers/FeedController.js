@@ -34,19 +34,19 @@ const changeLikeStatus = errorWrapper(async (req, res) => {
     user_id: userIdFromToken,
   });
 
+  const changeLikeInput = {
+    feed_id: Number(feedId),
+    user_id: userIdFromToken,
+    id: foundLikeStatus?.id,
+  };
+
   if (!foundLikeStatus) {
-    const toLike = await FeedService.changeToLiked({
-      feed_id: Number(feedId),
-      user_id: userIdFromToken,
-    });
+    const toLike = await FeedService.changeToLiked({ data: changeLikeInput });
     res.status(200).json({ toLike });
   }
 
   if (foundLikeStatus) {
-    const { id: foundStatusId } = foundLikeStatus;
-    const toNotLiked = await FeedService.deleteLiked({
-      id: foundStatusId,
-    });
+    const toNotLiked = await FeedService.deleteLiked({ data: changeLikeInput });
     res.status(200).json({ toNotLiked });
   }
 });
