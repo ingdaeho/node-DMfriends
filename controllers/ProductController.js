@@ -19,4 +19,17 @@ const getOneProduct = errorWrapper(async (req, res) => {
   res.status(200).json({ productDetail });
 });
 
-module.exports = { getProducts, getOneProduct };
+const getRecentViews = errorWrapper(async (req, res) => {
+  const { id: userIdFromToken } = req.foundUser;
+  const { productId } = req.params;
+  const { query } = req;
+
+  const recentViews = await ProductService.findRecentViews({
+    product_id: productId,
+    user_id: userIdFromToken,
+    query,
+  });
+  res.status(200).json({ recentViews });
+});
+
+module.exports = { getProducts, getOneProduct, getRecentViews };

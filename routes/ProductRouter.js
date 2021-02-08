@@ -5,5 +5,10 @@ const validateToken = require("../middlewares/validateToken");
 
 router.get("/", ProductController.getProducts);
 router.get("/:productId", validateToken, ProductController.getOneProduct);
+router.get(
+  "/:productId/reviews",
+  validateToken,
+  ProductController.getRecentViews
+);
 
 module.exports = router;
