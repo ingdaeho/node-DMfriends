@@ -70,30 +70,11 @@ const deleteChosenItem = errorWrapper(async (req, res) => {
   if (Number(userId) !== userIdFromToken)
     errorGenerator({ statusCode: 403, message: "Unauthorized" });
 
-  const foundCart = await CartService.findCart({
-    user_id: userIdFromToken,
-    product_id,
-  });
-  const { id: idFromCart } = foundCart;
-
   const deletedSelectedItem = await CartService.deleteSelectedItem({
-    id: idFromCart || 1,
+    user_id: userId,
     product_id,
   });
   res.status(201).json({ deletedSelectedItem });
-});
-
-const deleteAllItems = errorWrapper(async (req, res) => {
-  const { userId } = req.params;
-  const { id: userIdFromToken } = req.foundUser;
-
-  if (Number(userId) !== userIdFromToken)
-    errorGenerator({ statusCode: 403, message: "Unauthorized" });
-
-  const deletedAllItems = await CartService.deleteAllItems({
-    user_id: userId,
-  });
-  res.status(201).json({ deletedAllItems });
 });
 
 module.exports = {
@@ -101,5 +82,4 @@ module.exports = {
   addItem,
   changeQuantity,
   deleteChosenItem,
-  deleteAllItems,
 };

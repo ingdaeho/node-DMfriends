@@ -63,7 +63,7 @@ const addItem = async (fields) => {
   });
 
   if (!foundCart)
-    await prisma.cart.create({
+    return prisma.cart.create({
       data: {
         product_id,
         user_id,
@@ -72,23 +72,18 @@ const addItem = async (fields) => {
       },
     });
 
-  await prisma.cart.update({
-    where: {
-      id: foundCart.id,
-    },
-    data: {
-      quantity: {
-        increment: quantity,
+  if (foundCart)
+    return prisma.cart.update({
+      where: {
+        id: foundCart.id,
       },
-      updated_at: new Date(),
-    },
-  });
-
-  return prisma.cart.findFirst({
-    where: {
-      id: foundCart.id,
-    },
-  });
+      data: {
+        quantity: {
+          increment: quantity,
+        },
+        updated_at: new Date(),
+      },
+    });
 };
 
 const changeProductValue = (fields) => {
@@ -103,10 +98,11 @@ const changeProductValue = (fields) => {
 };
 
 const deleteSelectedItem = (fields) => {
-  const { id, product_id } = fields;
+  const { product_id, user_id } = fields;
+  console.log(product_id);
   return prisma.cart.updateMany({
     where: {
-      id,
+      user_id: Number(user_id),
       product_id,
       deleted_at: null,
     },
