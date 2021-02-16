@@ -19,18 +19,9 @@ router.post(
 );
 
 // cart
-router.get("/:userId/cart", CartController.getCartItems);
+router.get("/:userId/cart", validateToken, CartController.getCartItems);
 router.post("/:userId/cart", validateToken, CartController.addItem);
-router.put(
-  "/:userId/cart/:cartId",
-  validateToken,
-  CartController.changeQuantity
-);
-router.delete(
-  "/:userId/cart/:cartId",
-  validateToken,
-  CartController.deleteOneItem
-);
-router.delete("/:userId/cart", validateToken, CartController.deleteAllItems);
+router.put("/:userId/cart", validateToken, CartController.changeQuantity);
+router.delete("/:userId/cart", validateToken, CartController.deleteChosenItem);
 
 module.exports = router;
