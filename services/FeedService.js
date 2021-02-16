@@ -1,12 +1,15 @@
 const prisma = require("../prisma");
 
-const ARTICLES_DEFAULT_OFFSET = 0;
-const ARTICLES_DEFAULT_LIMIT = 5;
+const FEEDS_DEFAULT_OFFSET = 0;
+const FEEDS_DEFAULT_LIMIT = 5;
 
 const findFeeds = (query) => {
-  const { offset, limit, ...fields } = query;
+  const { offset, limit } = query;
 
   return prisma.feeds.findMany({
+    where: {
+      deleted_at: null,
+    },
     include: {
       characters: {
         select: {
@@ -26,24 +29,26 @@ const findFeeds = (query) => {
       },
       likes: {},
     },
-    skip: Number(offset) || ARTICLES_DEFAULT_OFFSET,
-    take: Number(limit) || ARTICLES_DEFAULT_LIMIT,
+    skip: Number(offset) || FEEDS_DEFAULT_OFFSET,
+    take: Number(limit) || FEEDS_DEFAULT_LIMIT,
     orderBy: {
       created_at: "desc",
     },
   });
 };
 
-const findComments = ({ feed_id }) => {
+const findComments = (fields) => {
+  const { feed_id } = fields;
   return prisma.feed_comments.findMany({
-    where: { feed_id },
+    where: { feed_id, deleted_at: null },
     orderBy: {
       created_at: "desc",
     },
   });
 };
 
-const createComment = ({ feed_id, user_id, contents }) => {
+const createComment = (fields) => {
+  const { feed_id, user_id, contents } = fields;
   return prisma.feed_comments.create({
     data: {
       feed_id,
@@ -53,63 +58,34 @@ const createComment = ({ feed_id, user_id, contents }) => {
   });
 };
 
-const findLikeStatus = ({ feed_id }) => {
-  return prisma.feeds.findUnique({
-    where: { id: Number(feed_id) },
-    select: {
-      isLiked: true,
+const findLikeStatus = (fields) => {
+  const { feed_id, user_id } = fields;
+  const value = Number(feed_id);
+  return prisma.likes.findFirst({
+    where: {
+      feed_id: value,
+      user_id,
     },
   });
 };
 
-// const changeToLiked = ({ feed_id, user_id }) => {
-//   return (
-//     prisma.likes.create({
-//       data: {
-//         feed_id,
-//         user_id,
-//       },
-//     }),
-//     prisma.feeds.update({
-//       where: {
-//         id: feed_id,
-//       },
-//       data: {
-//         isLiked: 1,
-//       },
-//     })
-//   );
-// }
-
-const changeToLiked = ({ feed_id, user_id }) => {
-  prisma.likes.create({
+const changeToLiked = (fields) => {
+  const { feed_id, user_id } = fields.data;
+  return prisma.likes.create({
     data: {
       feed_id,
       user_id,
     },
-  }),
-    prisma.feeds.update({
-      where: {
-        id: feed_id,
-      },
-      data: {
-        isLiked: true,
-      },
-    });
+  });
 };
 
-const deleteLiked = ({ feed_id }) => {
-  return (
-    prisma.likes.delete({ where: { id: feed_id } }),
-    prisma.feeds.update({
-      where: {
-        id: feed_id,
-      },
-      data: {
-        isLiked: 0,
-      },
-    })
-  );
+const deleteLiked = (fields) => {
+  const { id: foundStatusId } = fields.data;
+  return prisma.likes.delete({
+    where: {
+      id: foundStatusId,
+    },
+  });
 };
 
 module.exports = {

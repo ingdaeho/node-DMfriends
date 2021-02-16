@@ -32,7 +32,6 @@ const signUp = errorWrapper(async (req, res) => {
 
 const logIn = errorWrapper(async (req, res) => {
   const { email, password: inputPassword } = req.body;
-
   const foundUser = await UserService.findUser({ email });
   if (!foundUser)
     errorGenerator({ statusCode: 400, message: "아이디를 확인해주세요" });

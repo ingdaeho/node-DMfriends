@@ -1,9 +1,10 @@
 const prisma = require("../prisma");
 
-const ARTICLES_DEFAULT_OFFSET = 0;
-const ARTICLES_DEFAULT_LIMIT = 5;
+const DEFAULT_OFFSET = 0;
+const DEFAULT_LIMIT = 8;
 
-const findProducts = () => {
+const findProducts = (query) => {
+  const { offset, limit, ...fields } = query;
   return prisma.products.findMany({
     include: {
       product_images: {
@@ -20,14 +21,17 @@ const findProducts = () => {
         },
       },
     },
+    skip: Number(offset) || DEFAULT_OFFSET,
+    take: Number(limit) || DEFAULT_LIMIT,
   });
 };
 
-const findDetailInfo = (query) => {
-  const { product_id, offset, limit } = query;
-  const value = Number(product_id);
-  return prisma.products.findUnique({
-    where: { id: value },
+const findDetailInfo = async (fields) => {
+  const { product_id, user_id, query } = fields;
+  const { offset, limit } = query;
+
+  const getDetailInfo = await prisma.products.findUnique({
+    where: { id: Number(product_id) },
     include: {
       product_images: {
         select: {
@@ -36,27 +40,90 @@ const findDetailInfo = (query) => {
         },
       },
       reviews: {
-        skip: Number(offset) || ARTICLES_DEFAULT_OFFSET,
-        take: Number(limit) || ARTICLES_DEFAULT_LIMIT,
+        select: {
+          id: true,
+          users: {
+            select: {
+              username: true,
+            },
+          },
+          contents: true,
+          review_rate: true,
+          liked_num: true,
+          isLiked: true,
+          created_at: true,
+        },
+        skip: Number(offset) || DEFAULT_OFFSET,
+        take: Number(limit) || DEFAULT_LIMIT,
         orderBy: {
           liked_num: "desc",
         },
       },
-      recent_views: {
-        skip: Number(offset) || ARTICLES_DEFAULT_OFFSET,
-        take: Number(limit) || ARTICLES_DEFAULT_LIMIT,
-        orderBy: {
-          viewed_at: "desc",
+    },
+  });
+  return getDetailInfo;
+};
+
+const findRecentViews = async (fields) => {
+  const { product_id, user_id, query } = fields;
+  const { offset, limit } = query;
+  const foundRecentViews = await prisma.recent_views.findFirst({
+    where: {
+      product_id: Number(product_id),
+      user_id,
+    },
+  });
+
+  if (!foundRecentViews)
+    await prisma.recent_views.create({
+      data: {
+        product_id: Number(product_id),
+        user_id,
+      },
+    });
+
+  await prisma.recent_views.update({
+    where: {
+      id: foundRecentViews.id,
+    },
+    data: {
+      viewed_at: new Date(),
+    },
+  });
+
+  return prisma.recent_views.findMany({
+    where: {
+      user_id,
+      product_id: {
+        not: Number(product_id),
+      },
+    },
+    select: {
+      products: {
+        select: {
+          name: true,
+          price: true,
+          product_images: {
+            select: {
+              image_url: true,
+            },
+            where: {
+              product_image_types: {
+                name: {
+                  equals: "thumbnail",
+                },
+              },
+            },
+          },
         },
       },
     },
+    skip: Number(offset) || DEFAULT_OFFSET,
+    take: Number(limit) || DEFAULT_LIMIT,
+    orderBy: {
+      viewed_at: "desc",
+    },
   });
-  // prisma.recent_views.create({
-  //   data: {
-  //     user_id: 2,
-  //     product_id: Number(product_id),
-  //   },
-  // })
 };
 
-module.exports = { findProducts, findDetailInfo };
+module.exports = { findProducts, findDetailInfo, findRecentViews };
