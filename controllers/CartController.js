@@ -65,14 +65,14 @@ const changeQuantity = errorWrapper(async (req, res) => {
 const deleteChosenItem = errorWrapper(async (req, res) => {
   const { userId } = req.params;
   const { id: userIdFromToken } = req.foundUser;
-  const { product_id } = req.body;
+  const selectedItems = req.body;
 
   if (Number(userId) !== userIdFromToken)
     errorGenerator({ statusCode: 403, message: "Unauthorized" });
 
   const deletedSelectedItem = await CartService.deleteSelectedItem({
-    user_id: userId,
-    product_id,
+    user_id: userIdFromToken,
+    selectedItems,
   });
   res.status(201).json({ deletedSelectedItem });
 });

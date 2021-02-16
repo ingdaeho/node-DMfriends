@@ -23,6 +23,7 @@ const getItems = (fields) => {
       deleted_at: null,
     },
     select: {
+      id: true,
       products: {
         select: {
           name: true,
@@ -97,17 +98,26 @@ const changeProductValue = (fields) => {
   });
 };
 
-const deleteSelectedItem = (fields) => {
-  const { product_id, user_id } = fields;
-  console.log(product_id);
-  return prisma.cart.updateMany({
+const deleteSelectedItem = async (fields) => {
+  const { selectedItems, user_id } = fields;
+
+  const deleteItems = selectedItems.map(({ product_id }) => {
+    return prisma.cart.updateMany({
+      where: {
+        user_id,
+        product_id,
+        deleted_at: null,
+      },
+      data: {
+        deleted_at: new Date(),
+      },
+    });
+  });
+  await prisma.$transaction(deleteItems);
+  return prisma.cart.findMany({
     where: {
-      user_id: Number(user_id),
-      product_id,
+      user_id,
       deleted_at: null,
-    },
-    data: {
-      deleted_at: new Date(),
     },
   });
 };
