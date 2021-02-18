@@ -40,4 +40,4 @@ Front-end로 참여했던 [팀 프로젝트](https://github.com/ingdaeho/15-1st-
 Node.js, Express, Prisma, MySQL
 
 ## 💰 소감 및 후기
-[회고록](https://velog.io/@ingdaeho/NodejsProject)
+### [회고록](https://velog.io/@ingdaeho/NodejsProject)
