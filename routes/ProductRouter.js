@@ -6,7 +6,7 @@ const validateToken = require("../middlewares/validateToken");
 router.get("/", ProductController.getProducts);
 router.get("/:productId", validateToken, ProductController.getOneProduct);
 router.get(
-  "/:productId/reviews",
+  "/:productId/recentViews",
   validateToken,
   ProductController.getRecentViews
 );

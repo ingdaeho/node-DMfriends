@@ -26,6 +26,7 @@ const getItems = (fields) => {
       id: true,
       products: {
         select: {
+          id: true,
           name: true,
           product_images: {
             select: {

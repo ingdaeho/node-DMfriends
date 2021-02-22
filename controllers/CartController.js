@@ -20,7 +20,6 @@ const addItem = errorWrapper(async (req, res) => {
   const { userId } = req.params;
   const { id: userIdFromToken } = req.foundUser;
   const { product_id, quantity, price } = req.body;
-
   if (Number(userId) !== userIdFromToken)
     errorGenerator({ statusCode: 403, message: "Unauthorized" });
 
@@ -66,7 +65,7 @@ const deleteChosenItem = errorWrapper(async (req, res) => {
   const { userId } = req.params;
   const { id: userIdFromToken } = req.foundUser;
   const selectedItems = req.body;
-
+  console.log(req.body);
   if (Number(userId) !== userIdFromToken)
     errorGenerator({ statusCode: 403, message: "Unauthorized" });
 
