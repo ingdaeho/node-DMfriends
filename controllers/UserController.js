@@ -45,7 +45,15 @@ const logIn = errorWrapper(async (req, res) => {
   res.status(200).json({ message: "로그인 성공!", token });
 });
 
+const getUserInfo = errorWrapper(async (req, res) => {
+  const { id } = req.foundUser;
+
+  const userInfo = await UserService.findUser({ id });
+  res.status(200).json({ userInfo });
+});
+
 module.exports = {
   signUp,
   logIn,
+  getUserInfo,
 };
