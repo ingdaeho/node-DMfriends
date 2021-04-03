@@ -4,7 +4,12 @@ const FEEDS_DEFAULT_OFFSET = 0;
 const FEEDS_DEFAULT_LIMIT = 5;
 
 const findFeeds = (query) => {
-  const { offset, limit } = query;
+  const { limit, page } = query;
+
+  let offset;
+  if (page) {
+    offset = page * 5;
+  }
 
   return prisma.feeds.findMany({
     where: {
@@ -23,7 +28,11 @@ const findFeeds = (query) => {
       },
       feed_comments: {
         select: {
-          user_id: true,
+          users: {
+            select: {
+              username: true,
+            },
+          },
           contents: true,
         },
       },

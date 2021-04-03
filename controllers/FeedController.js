@@ -3,7 +3,7 @@ const { errorWrapper } = require("../errors");
 
 const getFeeds = errorWrapper(async (req, res) => {
   const feeds = await FeedService.findFeeds(req.query);
-  res.status(200).json({ feeds });
+  res.status(200).json(feeds);
 });
 
 const getComments = errorWrapper(async (req, res) => {
