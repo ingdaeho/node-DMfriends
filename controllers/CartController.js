@@ -13,7 +13,8 @@ const getCartItems = errorWrapper(async (req, res) => {
     user_id: userIdFromToken,
     query,
   });
-  res.status(200).json({ cartItems });
+
+  res.status(200).json(cartItems);
 });
 
 const addItem = errorWrapper(async (req, res) => {
@@ -43,19 +44,13 @@ const addItem = errorWrapper(async (req, res) => {
 const changeQuantity = errorWrapper(async (req, res) => {
   const { userId } = req.params;
   const { id: userIdFromToken } = req.foundUser;
-  const { quantity, product_id } = req.body;
+  const { quantity, cart_id } = req.body;
 
   if (Number(userId) !== userIdFromToken)
     errorGenerator({ statusCode: 403, message: "Unauthorized" });
 
-  const foundCart = await CartService.findCart({
-    user_id: userIdFromToken,
-    product_id,
-  });
-  const { id: idFromCart } = foundCart;
-
   const changedQuantity = await CartService.changeProductValue({
-    id: idFromCart,
+    id: cart_id,
     quantity,
   });
   res.status(201).json({ changedQuantity });
